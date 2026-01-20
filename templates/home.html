@@ -1,0 +1,543 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ShopHub - Your Ultimate Shopping Destination{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Hero Section Animation */
+.hero-section {
+    position: relative;
+    min-height: 600px;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                url("static/images/image1.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hero-section h1 , .hero-section p {
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: moveBackground 20s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+/* Feature Box Hover */
+
+.features-bg {
+    padding: 80px 0;
+    background: url("{% static 'images/image2.png' %}") center/cover no-repeat;
+}
+
+
+
+
+.feature-box {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+
+.feature-box {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.feature-box:hover {
+    transform: translateY(-10px);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.feature-box .icon-box i {
+    transition: transform 0.3s ease;
+}
+
+.feature-box:hover .icon-box i {
+    transform: scale(1.2) rotate(5deg);
+}
+
+/* Category Cards */
+
+.categories-section{
+    background-image: url("{% static 'images/image.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 60px 0;
+}
+
+
+
+.category-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.category-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.category-card .category-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: rotate(360deg) scale(1.1);
+}
+
+.category-card .btn {
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .btn {
+    transform: translateX(10px);
+}
+
+
+.special-offer {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    min-height: 260px;
+}
+
+.offer-right {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+}
+
+.special-offer h1 {
+    text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.special-offer .btn:hover {
+    transform: translateY(-3px);
+    transition: 0.3s ease;
+}
+
+
+/* Product Cards */
+.product-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.product-card img {
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.1);
+}
+
+/* Pulse Animation for Badges */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.badge {
+    animation: pulse 2s infinite;
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Newsletter Section */
+.newsletter-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: moveBackground 15s linear infinite;
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Stats Counter Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-on-scroll {
+    animation: fadeInUp 0.8s ease-out;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="hero-section py-5" style="min-height: 600px;">
+        <div class="container position-relative" style="z-index: 1;">
+            <div class="row align-items-center py-5">
+                <div class="col-md-6 text-white">
+                    <h1 class="display-2 fw-bold mb-4 animate-on-scroll">
+                        Welcome to <span style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">ShopHub!</span>
+                    </h1>
+                    <p class="lead fs-3 mb-4 animate-on-scroll" style="animation-delay: 0.2s;">
+                        🛍️ Discover amazing products at unbeatable prices. Shop the latest trends in electronics, fashion, home & more.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap animate-on-scroll" style="animation-delay: 0.4s;">
+                        <a href="{% url 'products:product_list' %}" class="btn btn-light btn-lg px-5 shadow-lg">
+                            <i class="fas fa-shopping-bag"></i> Shop Now
+                        </a>
+                        <a href="{% url 'products:product_list' %}" class="btn btn-outline-light btn-lg px-5">
+                            <i class="fas fa-tags"></i> View Deals
+                        </a>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="row mt-5 text-center">
+                        <div class="col-4">
+                            <h3 class="fw-bold mb-0">10K+</h3>
+                            <small>Products</small>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="fw-bold mb-0">5K+</h3>
+                            <small>Happy Customers</small>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="fw-bold mb-0">4.8★</h3>
+                            <small>Rating</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center animate-on-scroll" style="animation-delay: 0.3s;">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=500&fit=crop" 
+                             alt="Shopping" 
+                             class="img-fluid rounded-4 shadow-lg" 
+                             style="max-height: 500px; object-fit: cover;">
+                        <div class="position-absolute top-0 start-0 m-3">
+                            <span class="badge bg-danger fs-5 shadow">🔥 Hot Deals</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-bg my-5 py-5">
+        <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-3 col-6">
+                <div class="feature-box p-4">
+                    <div class="icon-box mb-3">
+                        <i class="fas fa-shipping-fast fa-4x text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold">Free Shipping</h5>
+                    <p class="text-muted mb-0">On orders above ₹500</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-box p-4">
+                    <div class="icon-box mb-3">
+                        <i class="fas fa-undo-alt fa-4x text-success"></i>
+                    </div>
+                    <h5 class="fw-bold">Easy Returns</h5>
+                    <p class="text-muted mb-0">30-day return policy</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-box p-4">
+                    <div class="icon-box mb-3">
+                        <i class="fas fa-lock fa-4x text-warning"></i>
+                    </div>
+                    <h5 class="fw-bold">Secure Payment</h5>
+                    <p class="text-muted mb-0">100% secure transactions</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-box p-4">
+                    <div class="icon-box mb-3">
+                        <i class="fas fa-headset fa-4x text-danger"></i>
+                    </div>
+                    <h5 class="fw-bold">24/7 Support</h5>
+                    <p class="text-muted mb-0">Dedicated customer service</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+    <div class="container my-5 py-5">
+        <div class="text-center mb-5">
+            <h2 class="display-4 fw-bold gradient-text mb-3">Shop by Category</h2>
+            <p class="lead text-muted">Browse through our wide range of product categories</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url 'products:product_list' %}" class="text-decoration-none">
+                    <div class="card category-card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="category-icon mb-3">
+                                <i class="fas fa-laptop fa-4x text-primary"></i>
+                            </div>
+                            <h5 class="card-title fw-bold text-dark">Electronics</h5>
+                            <p class="card-text text-muted">Latest gadgets & devices</p>
+                            <span class="btn btn-outline-primary">
+                                Browse <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url 'products:product_list' %}" class="text-decoration-none">
+                    <div class="card category-card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="category-icon mb-3">
+                                <i class="fas fa-tshirt fa-4x text-success"></i>
+                            </div>
+                            <h5 class="card-title fw-bold text-dark">Fashion</h5>
+                            <p class="card-text text-muted">Trending styles for everyone</p>
+                            <span class="btn btn-outline-success">
+                                Browse <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url 'products:product_list' %}" class="text-decoration-none">
+                    <div class="card category-card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="category-icon mb-3">
+                                <i class="fas fa-couch fa-4x text-warning"></i>
+                            </div>
+                            <h5 class="card-title fw-bold text-dark">Home & Kitchen</h5>
+                            <p class="card-text text-muted">Everything for your home</p>
+                            <span class="btn btn-outline-warning">
+                                Browse <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="{% url 'products:product_list' %}" class="text-decoration-none">
+                    <div class="card category-card border-0 shadow-sm h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="category-icon mb-3">
+                                <i class="fas fa-book fa-4x text-danger"></i>
+                            </div>
+                            <h5 class="card-title fw-bold text-dark">Books</h5>
+                            <p class="card-text text-muted">Expand your knowledge</p>
+                            <span class="btn btn-outline-danger">
+                                Browse <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- Special Offer Banner -->
+<div class="container my-5">
+    <div class="row text-white rounded-4 shadow-lg overflow-hidden special-offer">
+
+        <!-- Left Content -->
+        <div class="col-md-6 d-flex align-items-center p-5">
+            <div>
+                <span class="badge bg-warning text-dark mb-3 px-3 py-2 fs-6">
+                    Limited Time
+                </span>
+
+                <h2 class="display-6 fw-bold mb-3">
+                    🎉 Special Offer!
+                </h2>
+
+                <p class="fs-5 mb-4 opacity-90">
+                    Get up to <strong>50% OFF</strong> on selected items.
+                    Don’t miss this deal!
+                </p>
+
+                <a href="{% url 'products:product_list' %}" 
+                   class="btn btn-light btn-lg px-5 rounded-pill shadow">
+                    Shop Now <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Offer -->
+        <div class="col-md-6 d-flex align-items-center justify-content-center offer-right">
+            <div class="text-center">
+                <h1 class="fw-bold display-1 mb-0">50%</h1>
+                <p class="fs-2 fw-semibold">OFF</p>
+                <p class="opacity-75">On Selected Products</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+    <!-- Featured Products Placeholder -->
+   
+    <!-- Featured Products Section -->
+<div class="bg-light py-5 my-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-4 fw-bold gradient-text mb-3">Featured Products</h2>
+            <p class="lead text-muted">Check out our handpicked collection</p>
+        </div>
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-md-3 col-sm-6">
+                <div class="card product-card border-0 shadow-sm h-100">
+                    <div class="position-relative overflow-hidden">
+                        {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" 
+                             class="card-img-top" alt="{{ product.name }}"
+                             style="height: 300px; object-fit: cover;">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop" 
+                             class="card-img-top" alt="{{ product.name }}"
+                             style="height: 300px; object-fit: cover;">
+                        {% endif %}
+                        
+                        {% if product.get_discount_percentage > 0 %}
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                            -{{ product.get_discount_percentage }}%
+                        </span>
+                        {% endif %}
+                        
+                        {% if product.is_new_arrival %}
+                        <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                            New
+                        </span>
+                        {% endif %}
+                        
+                        {% if not product.is_in_stock %}
+                        <span class="badge bg-secondary position-absolute bottom-0 start-50 translate-middle-x mb-2">
+                            Out of Stock
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold">{{ product.name|truncatewords:5 }}</h6>
+                        <p class="text-muted small mb-2">{{ product.category.name }}</p>
+                        <div class="mb-2">
+                            <span class="text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= product.get_average_rating %}
+                                    ⭐
+                                    {% else %}
+                                    ☆
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <small class="text-muted">({{ product.get_review_count }})</small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-primary fw-bold fs-5">₹{{ product.get_final_price }}</span>
+                                {% if product.discount_price %}
+                                <small class="text-muted text-decoration-line-through ms-1">₹{{ product.price }}</small>
+                                {% endif %}
+                            </div>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No featured products available yet. Add products in admin panel!</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg px-5 shadow">
+                View All Products <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+    <!-- Newsletter Section -->
+    <div class="container my-5 py-4">
+        <div class="newsletter-section text-white rounded-4 shadow-lg p-5 position-relative">
+            <div class="row align-items-center position-relative" style="z-index: 1;">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h2 class="display-5 fw-bold mb-3">📧 Subscribe to Our Newsletter</h2>
+                    <p class="fs-5 mb-0">Get the latest updates on new products and upcoming sales</p>
+                </div>
+                <div class="col-md-6">
+                    <form class="d-flex gap-2 flex-column flex-sm-row">
+                        <input type="email" class="form-control form-control-lg" 
+                               placeholder="Enter your email" required>
+                        <button type="submit" class="btn btn-light btn-lg px-4 shadow">
+                            Subscribe <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                    <small class="text-white-50 mt-2 d-block">
+                        <i class="fas fa-lock"></i> Your email is safe with us
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Razorpay Payment{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-lg text-center p-5">
+        <h3 class="mb-3">Razorpay (Test Mode)</h3>
+        <p class="text-muted">This is a dummy payment screen</p>
+
+        <h4 class="mt-4">Amount: ₹{{ order.total_amount }}</h4>
+
+        <form method="post" action="{% url 'orders:razorpay_success' order.order_number %}">
+            {% csrf_token %}
+            <button class="btn btn-success btn-lg mt-4">
+                Pay Now (Dummy)
+            </button>
+        </form>
+
+        <p class="text-muted mt-3">
+            No real money will be deducted
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+#python cache files
+__pycache__/
+*.pyd
+*.pyc
+*.pyo
+
+#virtual environment
+myenv/
+env/
+venv/
+ENV/
+
+#Database
+db.sqlite3
+*.sqlite3
+*.db
+
+#Environment variables
+.env
+.env.local
+
+#media files(user uploaded content)
+media/
+
+#static files collected
+staticfiles/
+static_root/
+
+#IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+#Logs
+*.log
+logs/
+
+#os files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+#Django stuff
+*.pot
+local_settings.py
+

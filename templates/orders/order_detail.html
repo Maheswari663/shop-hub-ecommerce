@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Details - {{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="fas fa-file-invoice"></i> Order Details</h2>
+            <p class="text-muted mb-0">Order #{{ order.order_number }}</p>
+        </div>
+        <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Orders
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Order Information -->
+        <div class="col-md-8">
+            <!-- Status Timeline -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5><i class="fas fa-info-circle"></i> Order Status</h5>
+                        <span class="badge {{ order.get_status_badge_class }} fs-6">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Status Progress Bar -->
+                    <div class="progress mb-3" style="height: 25px;">
+                        {% if order.status == 'pending' %}
+                        <div class="progress-bar bg-warning" style="width: 25%">Pending</div>
+                        {% elif order.status == 'processing' %}
+                        <div class="progress-bar bg-info" style="width: 50%">Processing</div>
+                        {% elif order.status == 'shipped' %}
+                        <div class="progress-bar bg-primary" style="width: 75%">Shipped</div>
+                        {% elif order.status == 'delivered' %}
+                        <div class="progress-bar bg-success" style="width: 100%">Delivered</div>
+                        {% elif order.status == 'cancelled' %}
+                        <div class="progress-bar bg-danger" style="width: 100%">Cancelled</div>
+                        {% endif %}
+                    </div>
+
+                    <p class="mb-0">
+                        <small class="text-muted">
+                            <i class="far fa-calendar"></i> Order placed on {{ order.created_at|date:"d M Y, h:i A" }}
+                        </small>
+                    </p>
+                    {% if order.delivered_at %}
+                    <p class="mb-0">
+                        <small class="text-success">
+                            <i class="fas fa-check"></i> Delivered on {{ order.delivered_at|date:"d M Y, h:i A" }}
+                        </small>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-box"></i> Order Items</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in order_items %}
+                    <div class="row align-items-center mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                        <div class="col-md-2">
+                            <img src="{{ item.product.images.first.image.url }}" 
+                                 class="img-thumbnail" 
+                                 style="width: 100%; height: 100px; object-fit: cover;"
+                                 alt="{{ item.product.name }}">
+                        </div>
+                        <div class="col-md-5">
+                            <h6 class="mb-1">{{ item.product.name }}</h6>
+                            <p class="text-muted mb-0">
+                                <small>{{ item.product.category }}</small>
+                            </p>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <p class="mb-0"><strong>Qty:</strong> {{ item.quantity }}</p>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <p class="mb-0">₹{{ item.price }} each</p>
+                            <h6 class="text-primary mb-0">₹{{ item.get_total_price }}</h6>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Shipping Address -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Shipping Address</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>{{ order.full_name }}</strong></p>
+                    <p class="mb-1">{{ order.address_line1 }}</p>
+                    {% if order.address_line2 %}
+                    <p class="mb-1">{{ order.address_line2 }}</p>
+                    {% endif %}
+                    <p class="mb-1">{{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
+                    <p class="mb-1">{{ order.country }}</p>
+                    <p class="mb-1"><i class="fas fa-phone"></i> {{ order.phone }}</p>
+                    <p class="mb-0"><i class="fas fa-envelope"></i> {{ order.email }}</p>
+                </div>
+            </div>
+
+            {% if order.order_notes %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h6><i class="fas fa-sticky-note"></i> Order Notes:</h6>
+                    <p class="mb-0 text-muted">{{ order.order_notes }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-md-4">
+            <!-- Payment Summary -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-receipt"></i> Payment Summary</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr>
+                            <td>Subtotal:</td>
+                            <td class="text-end">₹{{ order.subtotal }}</td>
+                        </tr>
+                        <tr>
+                            <td>Shipping:</td>
+                            <td class="text-end">₹{{ order.shipping_cost }}</td>
+                        </tr>
+                        {% if order.tax > 0 %}
+                        <tr>
+                            <td>Tax:</td>
+                            <td class="text-end">₹{{ order.tax }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr class="table-active">
+                            <td><strong>Total:</strong></td>
+                            <td class="text-end"><h5 class="mb-0 text-primary">₹{{ order.total_amount }}</h5></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h6 class="mb-3"><i class="fas fa-credit-card"></i> Payment Details</h6>
+                    <p class="mb-2">
+                        <strong>Method:</strong><br>
+                        <span class="badge bg-info">{{ order.get_payment_method_display }}</span>
+                    </p>
+                    <p class="mb-0">
+                        <strong>Status:</strong><br>
+                        <span class="badge {% if order.payment_status == 'completed' %}bg-success{% else %}bg-warning{% endif %}">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </p>
+                    {% if order.payment_id %}
+                    <p class="mt-2 mb-0">
+                        <small class="text-muted">Payment ID: {{ order.payment_id }}</small>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Actions -->
+            {% if order.status in 'pending,processing' %}
+            <div class="card shadow-sm border-danger">
+                <div class="card-body text-center">
+                    <button type="button" 
+                            class="btn btn-danger w-100"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#cancelModal">
+                        <i class="fas fa-times-circle"></i> Cancel Order
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cancel Modal -->
+            <div class="modal fade" id="cancelModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Cancel Order</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to cancel this order?</p>
+                            <p class="text-muted mb-0"><small>Your product stock will be restored.</small></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep Order</button>
+                            <a href="{% url 'orders:cancel_order' order.order_number %}" 
+                               class="btn btn-danger">Yes, Cancel Order</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

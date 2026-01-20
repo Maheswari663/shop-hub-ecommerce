@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - ShopHub{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-map-marker-alt"></i> {{ title }}</h2>
+                <a href="{% url 'orders:address_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Addresses
+                </a>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit"></i> Address Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="addressForm">
+                        {% csrf_token %}
+
+                        <!-- Display Form Errors -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            {{ form.non_field_errors }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label for="{{ form.full_name.id_for_label }}" class="form-label">
+                                <i class="fas fa-user"></i> Full Name *
+                            </label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}
+                            <div class="text-danger mt-1">
+                                <small>{{ form.full_name.errors.0 }}</small>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                <i class="fas fa-phone"></i> Phone Number *
+                            </label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <div class="text-danger mt-1">
+                                <small>{{ form.phone.errors.0 }}</small>
+                            </div>
+                            {% endif %}
+                            <div class="form-text">10-digit mobile number</div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Address Line 1 -->
+                        <div class="mb-3">
+                            <label for="{{ form.address_line1.id_for_label }}" class="form-label">
+                                <i class="fas fa-home"></i> Address Line 1 *
+                            </label>
+                            {{ form.address_line1 }}
+                            {% if form.address_line1.errors %}
+                            <div class="text-danger mt-1">
+                                <small>{{ form.address_line1.errors.0 }}</small>
+                            </div>
+                            {% endif %}
+                            <div class="form-text">House/Flat No., Building Name, Street</div>
+                        </div>
+
+                        <!-- Address Line 2 -->
+                        <div class="mb-3">
+                            <label for="{{ form.address_line2.id_for_label }}" class="form-label">
+                                <i class="fas fa-map"></i> Address Line 2 (Optional)
+                            </label>
+                            {{ form.address_line2 }}
+                            {% if form.address_line2.errors %}
+                            <div class="text-danger mt-1">
+                                <small>{{ form.address_line2.errors.0 }}</small>
+                            </div>
+                            {% endif %}
+                            <div class="form-text">Landmark, Area, Colony</div>
+                        </div>
+
+                        <!-- City and State -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.city.id_for_label }}" class="form-label">
+                                    <i class="fas fa-city"></i> City *
+                                </label>
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                <div class="text-danger mt-1">
+                                    <small>{{ form.city.errors.0 }}</small>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.state.id_for_label }}" class="form-label">
+                                    <i class="fas fa-map-marked"></i> State *
+                                </label>
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                <div class="text-danger mt-1">
+                                    <small>{{ form.state.errors.0 }}</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Pincode and Country -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.pincode.id_for_label }}" class="form-label">
+                                    <i class="fas fa-mail-bulk"></i> Pincode *
+                                </label>
+                                {{ form.pincode }}
+                                {% if form.pincode.errors %}
+                                <div class="text-danger mt-1">
+                                    <small>{{ form.pincode.errors.0 }}</small>
+                                </div>
+                                {% endif %}
+                                <div class="form-text">6-digit postal code</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.country.id_for_label }}" class="form-label">
+                                    <i class="fas fa-globe"></i> Country *
+                                </label>
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                <div class="text-danger mt-1">
+                                    <small>{{ form.country.errors.0 }}</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Default Address Checkbox -->
+                        <div class="form-check mb-4">
+                            {{ form.is_default }}
+                            <label class="form-check-label" for="{{ form.is_default.id_for_label }}">
+                                <i class="fas fa-star text-warning"></i> 
+                                <strong>Set as default address</strong>
+                            </label>
+                            <div class="form-text">
+                                This address will be auto-selected during checkout
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'orders:address_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> Save Address
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Box -->
+            <div class="alert alert-info mt-4">
+                <h6><i class="fas fa-lightbulb"></i> Tips for Adding Address:</h6>
+                <ul class="mb-0">
+                    <li>Make sure your phone number is correct for delivery updates</li>
+                    <li>Include landmarks in Address Line 2 for easy delivery</li>
+                    <li>Double-check your pincode to avoid delivery issues</li>
+                    <li>Set a default address to speed up future checkouts</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation
+document.getElementById('addressForm').addEventListener('submit', function(e) {
+    const requiredFields = [
+        'id_full_name',
+        'id_phone', 
+        'id_address_line1',
+        'id_city',
+        'id_state',
+        'id_pincode',
+        'id_country'
+    ];
+    
+    let isValid = true;
+    let firstInvalidField = null;
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+            if (!firstInvalidField) {
+                firstInvalidField = field;
+            }
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    // Validate phone number (10 digits)
+    const phoneField = document.getElementById('id_phone');
+    const phonePattern = /^[0-9]{10}$/;
+    if (phoneField.value && !phonePattern.test(phoneField.value.trim())) {
+        phoneField.classList.add('is-invalid');
+        alert('Please enter a valid 10-digit phone number');
+        isValid = false;
+        if (!firstInvalidField) {
+            firstInvalidField = phoneField;
+        }
+    }
+    
+    // Validate pincode (6 digits)
+    const pincodeField = document.getElementById('id_pincode');
+    const pincodePattern = /^[0-9]{6}$/;
+    if (pincodeField.value && !pincodePattern.test(pincodeField.value.trim())) {
+        pincodeField.classList.add('is-invalid');
+        alert('Please enter a valid 6-digit pincode');
+        isValid = false;
+        if (!firstInvalidField) {
+            firstInvalidField = pincodeField;
+        }
+    }
+    
+    if (!isValid) {
+        e.preventDefault();
+        if (firstInvalidField) {
+            firstInvalidField.focus();
+            firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        alert('Please fill all required fields correctly!');
+    }
+});
+
+// Remove invalid class on input
+document.querySelectorAll('.form-control').forEach(field => {
+    field.addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+    });
+});
+</script>
+
+<style>
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.card {
+    border: none;
+}
+
+.alert-info {
+    background-color: #e7f3ff;
+    border-color: #b3d9ff;
+}
+</style>
+{% endblock %}

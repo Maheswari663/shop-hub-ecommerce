@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - ShopHub{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4"><i class="fas fa-shopping-cart"></i> Checkout</h2>
+    
+    <div class="row">
+        <!-- Checkout Form -->
+        <div class="col-md-7">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user"></i> Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="checkoutForm">
+                        {% csrf_token %}
+                        
+                        <!-- Saved Addresses -->
+                        {% if saved_addresses %}
+                        <div class="mb-4">
+                            <h6>Select Saved Address:</h6>
+                            <select class="form-select" id="savedAddressSelect">
+                                <option value="">-- Enter New Address --</option>
+                                {% for addr in saved_addresses %}
+                                <option value="{{ addr.id }}" 
+                                    data-name="{{ addr.full_name }}"
+                                    data-phone="{{ addr.phone }}"
+                                    data-address1="{{ addr.address_line1 }}"
+                                    data-address2="{{ addr.address_line2 }}"
+                                    data-city="{{ addr.city }}"
+                                    data-state="{{ addr.state }}"
+                                    data-pincode="{{ addr.pincode }}"
+                                    data-country="{{ addr.country }}">
+                                    {{ addr.full_name }} - {{ addr.city }}, {{ addr.state }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <!-- Contact Information -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name *</label>
+                                {{ form.full_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number *</label>
+                                {{ form.phone }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email Address *</label>
+                            {{ form.email }}
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label class="form-label">Address Line 1 *</label>
+                            {{ form.address_line1 }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Address Line 2 (Optional)</label>
+                            {{ form.address_line2 }}
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">City *</label>
+                                {{ form.city }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">State *</label>
+                                {{ form.state }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Pincode *</label>
+                                {{ form.pincode }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Country *</label>
+                                {{ form.country }}
+                            </div>
+                        </div>
+
+                        <!-- Save Address Option -->
+                        <div class="form-check mb-3">
+                            {{ form.save_address }}
+                            <label class="form-check-label">
+                                Save this address for future orders
+                            </label>
+                        </div>
+
+                        <hr>
+
+                        <!-- Payment Method -->
+                        <h6 class="mb-3"><i class="fas fa-credit-card"></i> Payment Method</h6>
+                        {% for value, label in form.payment_method.field.choices %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="payment_method" 
+                                   id="payment_{{ value }}" value="{{ value }}" 
+                                   {% if forloop.first %}checked{% endif %}>
+                            <label class="form-check-label" for="payment_{{ value }}">
+                                <i class="fas fa-{% if value == 'cod' %}money-bill-wave{% else %}credit-card{% endif %}"></i>
+                                {{ label }}
+                            </label>
+                        </div>
+                        {% endfor %}
+
+                        <hr>
+
+                        <!-- Order Notes -->
+                        <div class="mb-3">
+                            <label class="form-label">Order Notes (Optional)</label>
+                            {{ form.order_notes }}
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-check-circle"></i> Place Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-md-5">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Cart Items -->
+                    <div class="mb-3">
+                        {% for item in cart_items %}
+                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <img src="{{ item.product.images.first.image.url }}" 
+                                 class="img-thumbnail me-3" 
+                                 style="width: 60px; height: 60px; object-fit: cover;"
+                                 alt="{{ item.product.name }}">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ item.product.name }}</h6>
+                                <small class="text-muted">Qty: {{ item.quantity }}</small>
+                            </div>
+                            <strong>₹{{ item.get_total_price }}</strong>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Price Summary -->
+                    <div class="border-top pt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <strong>₹{{ subtotal }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <strong>
+                                {% if shipping_cost > 0 %}
+                                    ₹{{ shipping_cost }}
+                                {% else %}
+                                    <span class="text-success">FREE</span>
+                                {% endif %}
+                            </strong>
+                        </div>
+                        {% if tax > 0 %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax:</span>
+                            <strong>₹{{ tax }}</strong>
+                        </div>
+                        {% endif %}
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <h5>Total:</h5>
+                            <h5 class="text-primary">₹{{ total }}</h5>
+                        </div>
+                    </div>
+
+                    {% if shipping_cost > 0 %}
+                    <div class="alert alert-info mt-3 mb-0">
+                        <small><i class="fas fa-info-circle"></i> Add ₹{{ 500|add:"-"|add:subtotal }} more for FREE shipping!</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-fill address from saved addresses
+document.getElementById('savedAddressSelect')?.addEventListener('change', function() {
+    if(this.value) {
+        const selected = this.options[this.selectedIndex];
+        document.getElementById('id_full_name').value = selected.dataset.name || '';
+        document.getElementById('id_phone').value = selected.dataset.phone || '';
+        document.getElementById('id_address_line1').value = selected.dataset.address1 || '';
+        document.getElementById('id_address_line2').value = selected.dataset.address2 || '';
+        document.getElementById('id_city').value = selected.dataset.city || '';
+        document.getElementById('id_state').value = selected.dataset.state || '';
+        document.getElementById('id_pincode').value = selected.dataset.pincode || '';
+        document.getElementById('id_country').value = selected.dataset.country || '';
+    }
+});
+
+// Form validation
+document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    const requiredFields = ['id_full_name', 'id_phone', 'id_email', 'id_address_line1', 'id_city', 'id_state', 'id_pincode'];
+    let isValid = true;
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if(!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    if(!isValid) {
+        e.preventDefault();
+        alert('Please fill all required fields!');
+    }
+});
+</script>
+{% endblock %}
