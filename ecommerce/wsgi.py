@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 import os
 import sys
 
-path='/home/sunkarimaheswari/shop-hub-ecommerce'
+path='/home/sirisha123/shop-hub-ecommerce'
 if path not in sys.path:
     sys.path.append(path)
 
